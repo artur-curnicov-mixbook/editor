@@ -1,0 +1,15 @@
+.toolbox {
+  background-color: #34495e;
+}
+
+.shape {
+  padding: 15px;
+  border-bottom: 1px #ddd solid;
+}
+
+.shape svg {
+  display: block;
+  stroke: #88a1c7;
+  fill: #dce8fa;
+  stroke-width: 3px;
+}
