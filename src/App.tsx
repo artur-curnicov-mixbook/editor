@@ -1,12 +1,12 @@
 import './App.css';
-import ToolBox from './components/ToolBox/ToolBox';
-import WorkingArea from './components/WorkingArea/WorkingArea';
+import { ToolBox } from './components/ToolBox/ToolBox';
+import { WorkingArea } from './components/WorkingArea/WorkingArea';
 
-function App() {
-  return <div className='app'>
-    <ToolBox></ToolBox>
-    <WorkingArea></WorkingArea>
-  </div>
+export function App(): JSX.Element {
+  return (
+    <div className="app">
+      <ToolBox />
+      <WorkingArea />
+    </div>
+  );
 }
-
-export default App;
