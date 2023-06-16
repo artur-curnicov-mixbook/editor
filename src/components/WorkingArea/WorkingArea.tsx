@@ -1,9 +1,5 @@
 import './WorkingArea.css';
 
-const WorkingArea = () => {
-  return (
-    <div className="working-area"></div>
-  );
-};
-
-export default WorkingArea;
+export function WorkingArea(): JSX.Element {
+  return <div className="working-area" />;
+}
