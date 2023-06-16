@@ -1,0 +1,19 @@
+name: Check
+on: [pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+      - name: Set NPM Registry for installing dependencies
+        run: npm config set registry https://registry.npmjs.com/
+      - name: Install dependencies
+        run: npm ci -f
+      - name: Generate build code
+        run: npm run build --if-present
+      - name: Run formatter
+        run: npm run format-check
+      - name: Run linter
+        run: npm run lint-check
