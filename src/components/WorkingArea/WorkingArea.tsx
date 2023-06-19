@@ -1,33 +1,16 @@
-import './WorkingArea.css';
+import { useSelector } from 'react-redux';
 import { WorkingAreaElement } from '../../interfaces/WorkingArea/WorkingAreaElement.interface';
-import { useDispatch, useSelector } from 'react-redux';
-import { addCircle, addSquare, addTriangle } from '../../state/WorkingAreaElementReducer';
 import { RootState } from '../../state';
+import './WorkingArea.css';
 
 const CIRCLE_SIZE = 3;
 const SQUARE_SIZE = 5;
 const TRIANGLE_SIZE = 6;
 
 export function WorkingArea(): JSX.Element {
-  const dispatch = useDispatch();
-
   const circles = useSelector((state: RootState) => state.workingAreaElements.circles);
   const squares = useSelector((state: RootState) => state.workingAreaElements.squares);
   const triangles = useSelector((state: RootState) => state.workingAreaElements.triangles);
-
-  const createCircle = (): void => {
-    dispatch(addCircle({ x: Math.floor(Math.random() * 101), y: Math.floor(Math.random() * 101) }));
-  };
-
-  const createSquare = (): void => {
-    dispatch(addSquare({ x: Math.floor(Math.random() * 101), y: Math.floor(Math.random() * 101) }));
-  };
-
-  const createTriangle = (): void => {
-    dispatch(
-      addTriangle({ x: Math.floor(Math.random() * 101), y: Math.floor(Math.random() * 101) })
-    );
-  };
 
   const getTrianglePoints = (x: number, y: number, size: number): string => {
     const height = (Math.sqrt(3) / 2) * size;
@@ -68,10 +51,6 @@ export function WorkingArea(): JSX.Element {
           />
         ))}
       </svg>
-
-      <button onClick={createCircle}>Generate circle</button>
-      <button onClick={createSquare}>Generate square</button>
-      <button onClick={createTriangle}>Generate triangle</button>
     </div>
   );
 }
