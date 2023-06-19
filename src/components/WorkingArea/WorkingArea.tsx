@@ -1,35 +1,32 @@
-import { useState } from 'react';
 import './WorkingArea.css';
 import { WorkingAreaElement } from '../../interfaces/WorkingArea/WorkingAreaElement.interface';
+import { useDispatch, useSelector } from 'react-redux';
+import { addCircle, addSquare, addTriangle } from '../../state/WorkingAreaElementReducer';
+import { RootState } from '../../state';
 
 const CIRCLE_SIZE = 3;
 const SQUARE_SIZE = 5;
 const TRIANGLE_SIZE = 6;
 
 export function WorkingArea(): JSX.Element {
-  const [circles, setCircles] = useState<WorkingAreaElement[]>([]);
-  const [squares, setSquares] = useState<WorkingAreaElement[]>([]);
-  const [triangles, setTriangles] = useState<WorkingAreaElement[]>([]);
+  const dispatch = useDispatch();
 
-  const addCircle = (): void => {
-    setCircles([
-      ...circles,
-      { x: Math.floor(Math.random() * 101), y: Math.floor(Math.random() * 101) }
-    ]);
+  const circles = useSelector((state: RootState) => state.workingAreaElements.circles);
+  const squares = useSelector((state: RootState) => state.workingAreaElements.squares);
+  const triangles = useSelector((state: RootState) => state.workingAreaElements.triangles);
+
+  const createCircle = (): void => {
+    dispatch(addCircle({ x: Math.floor(Math.random() * 101), y: Math.floor(Math.random() * 101) }));
   };
 
-  const addSquare = (): void => {
-    setSquares([
-      ...squares,
-      { x: Math.floor(Math.random() * 101), y: Math.floor(Math.random() * 101) }
-    ]);
+  const createSquare = (): void => {
+    dispatch(addSquare({ x: Math.floor(Math.random() * 101), y: Math.floor(Math.random() * 101) }));
   };
 
-  const addTriangle = (): void => {
-    setTriangles([
-      ...triangles,
-      { x: Math.floor(Math.random() * 101), y: Math.floor(Math.random() * 101) }
-    ]);
+  const createTriangle = (): void => {
+    dispatch(
+      addTriangle({ x: Math.floor(Math.random() * 101), y: Math.floor(Math.random() * 101) })
+    );
   };
 
   const getTrianglePoints = (x: number, y: number, size: number): string => {
@@ -72,9 +69,9 @@ export function WorkingArea(): JSX.Element {
         ))}
       </svg>
 
-      <button onClick={addCircle}>Generate circle</button>
-      <button onClick={addSquare}>Generate square</button>
-      <button onClick={addTriangle}>Generate triangle</button>
+      <button onClick={createCircle}>Generate circle</button>
+      <button onClick={createSquare}>Generate square</button>
+      <button onClick={createTriangle}>Generate triangle</button>
     </div>
   );
 }
