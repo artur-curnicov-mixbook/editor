@@ -3,3 +3,17 @@
   background: radial-gradient(circle at 50% 50%, #95a5a6 1px, transparent 0) 0 0 / 20px 20px,
     #ecf0f1;
 }
+
+.working-area svg {
+  display: block;
+  stroke: #88a1c7;
+  fill: #dce8fa;
+  stroke-width: 0.4px;
+}
+
+.working-area svg {
+  display: block;
+  stroke: #88a1c7;
+  fill: #dce8fa;
+  stroke-width: 0.4px;
+}
