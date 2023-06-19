@@ -20,7 +20,7 @@ export function ToolBox(): JSX.Element {
   };
 
   return (
-    <div className="toolbox">
+    <div className="toolbox" data-testid="toolbox">
       <div className="shape" onClick={createSquare}>
         <svg
           width="50"

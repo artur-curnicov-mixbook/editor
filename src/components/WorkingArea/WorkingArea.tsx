@@ -25,7 +25,7 @@ export function WorkingArea(): JSX.Element {
   };
 
   return (
-    <div className="working-area">
+    <div className="working-area" data-testid="workingarea">
       <svg
         width="100%"
         height="100%"
