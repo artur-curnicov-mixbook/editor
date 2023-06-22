@@ -1,10 +1,10 @@
-import { WorkingAreaSquare } from '../../domain/WorkingArea';
+import { SquareItem } from '../../domain/WorkingArea';
 
 interface SquareParameters {
-  item: WorkingAreaSquare;
+  item: SquareItem;
 }
 
-export const Square = ({ item }: SquareParameters): JSX.Element => {
+export function Square({ item }: SquareParameters): JSX.Element {
   const { x, y, width } = item;
   return <rect x={x} y={y} width={width} height={width} />;
-};
+}

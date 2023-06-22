@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import WorkingAreaElementReducer from './WorkingAreaElementReducer';
+import ItemsReducer from './ItemsReducer';
 
 export const store = configureStore({
   reducer: {
-    workingAreaElements: WorkingAreaElementReducer
+    workingAreaItems: ItemsReducer
   }
 });
 

@@ -1,31 +1,25 @@
-export enum WorkingAreaElementType {
-  circle,
-  square,
-  triangle
+export interface SquareItem extends Positionable {
+  width: number;
+  type: 'square';
+}
+
+export interface CircleItem extends Positionable {
+  radius: number;
+  type: 'circle';
+}
+
+export interface TriangleItem extends Positionable {
+  size: number;
+  type: 'triangle';
+}
+
+export type Item = SquareItem | CircleItem | TriangleItem;
+
+export interface WorkingAreaState {
+  items: Item[];
 }
 
 interface Positionable {
   x: number;
   y: number;
-}
-
-export interface WorkingAreaSquare extends Positionable {
-  width: number;
-  type: WorkingAreaElementType.square;
-}
-
-export interface WorkingAreaCircle extends Positionable {
-  radius: number;
-  type: WorkingAreaElementType.circle;
-}
-
-export interface WorkingAreaTriangle extends Positionable {
-  size: number;
-  type: WorkingAreaElementType.triangle;
-}
-
-export type WorkingAreaElement = WorkingAreaSquare | WorkingAreaCircle | WorkingAreaTriangle;
-
-export interface WorkingAreaElementState {
-  elements: WorkingAreaElement[];
 }
