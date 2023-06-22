@@ -1,10 +1,11 @@
-import { CircleItem } from '../../domain/WorkingArea';
+import { configuration } from '../../configuration/configuration';
+import { Item } from '../../domain/WorkingArea';
 
 interface CircleParameters {
-  item: CircleItem;
+  item: Item;
 }
 
 export function Circle({ item }: CircleParameters): JSX.Element {
-  const { x, y, radius } = item;
-  return <circle cx={x} cy={y} r={radius} />;
+  const { x, y } = item;
+  return <circle cx={x} cy={y} r={configuration.circle.radius} />;
 }

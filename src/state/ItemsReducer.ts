@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Item, WorkingAreaState } from '../domain/WorkingArea';
+import { Item } from '../domain/WorkingArea';
 
 const initialState: WorkingAreaState = {
   items: []
@@ -17,3 +17,7 @@ export const workingAreaSlice = createSlice({
 
 export const { addItem } = workingAreaSlice.actions;
 export default workingAreaSlice.reducer;
+
+interface WorkingAreaState {
+  items: Item[];
+}
