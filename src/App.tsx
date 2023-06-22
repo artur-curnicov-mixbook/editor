@@ -4,7 +4,7 @@ import { ToolBox } from './components/ToolBox/ToolBox';
 import { WorkingArea } from './components/WorkingArea/WorkingArea';
 import { store } from './state';
 
-export const App = (): JSX.Element => {
+export function App(): JSX.Element {
   return (
     <div className="app">
       <Provider store={store}>
@@ -13,4 +13,4 @@ export const App = (): JSX.Element => {
       </Provider>
     </div>
   );
-};
+}

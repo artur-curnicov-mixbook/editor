@@ -1,44 +1,43 @@
 import { useDispatch } from 'react-redux';
 import './ToolBox.css';
-import { WorkingAreaElementType } from '../../domain/WorkingArea';
-import { addElement } from '../../state/WorkingAreaElementReducer';
+import { addItem } from '../../state/ItemsReducer';
 
 const CIRCLE_SIZE = 3;
 const SQUARE_SIZE = 5;
 const TRIANGLE_SIZE = 6;
 
-export const ToolBox = (): JSX.Element => {
+export function ToolBox(): JSX.Element {
   const dispatch = useDispatch();
 
   const createSquare = (width: number): void => {
     dispatch(
-      addElement({
+      addItem({
         x: Math.floor(Math.random() * 101),
         y: Math.floor(Math.random() * 101),
         width,
-        type: WorkingAreaElementType.square
+        type: 'square'
       })
     );
   };
 
   const createCircle = (radius: number): void => {
     dispatch(
-      addElement({
+      addItem({
         x: Math.floor(Math.random() * 101),
         y: Math.floor(Math.random() * 101),
         radius,
-        type: WorkingAreaElementType.circle
+        type: 'circle'
       })
     );
   };
 
   const createTriangle = (size: number): void => {
     dispatch(
-      addElement({
+      addItem({
         x: Math.floor(Math.random() * 101),
         y: Math.floor(Math.random() * 101),
         size,
-        type: WorkingAreaElementType.triangle
+        type: 'triangle'
       })
     );
   };
@@ -67,4 +66,4 @@ export const ToolBox = (): JSX.Element => {
       </div>
     </div>
   );
-};
+}

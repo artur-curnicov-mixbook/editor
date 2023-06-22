@@ -1,10 +1,10 @@
-import { WorkingAreaTriangle } from '../../domain/WorkingArea';
+import { TriangleItem } from '../../domain/WorkingArea';
 
 interface TriangleParameters {
-  item: WorkingAreaTriangle;
+  item: TriangleItem;
 }
 
-export const Triangle = ({ item }: TriangleParameters): JSX.Element => {
+export function Triangle({ item }: TriangleParameters): JSX.Element {
   const { x, y, size } = item;
 
   const getTrianglePoints = (): string => {
@@ -20,4 +20,4 @@ export const Triangle = ({ item }: TriangleParameters): JSX.Element => {
   };
 
   return <polygon points={getTrianglePoints()} />;
-};
+}

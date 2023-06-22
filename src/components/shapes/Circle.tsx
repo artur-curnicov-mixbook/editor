@@ -1,10 +1,10 @@
-import { WorkingAreaCircle } from '../../domain/WorkingArea';
+import { CircleItem } from '../../domain/WorkingArea';
 
 interface CircleParameters {
-  item: WorkingAreaCircle;
+  item: CircleItem;
 }
 
-export const Circle = ({ item }: CircleParameters): JSX.Element => {
+export function Circle({ item }: CircleParameters): JSX.Element {
   const { x, y, radius } = item;
   return <circle cx={x} cy={y} r={radius} />;
-};
+}
