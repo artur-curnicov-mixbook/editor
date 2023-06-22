@@ -1,22 +1,11 @@
-export interface SquareItem extends Positionable {
-  width: number;
-  type: 'square';
+export interface Item extends Positionable {
+  type: ItemType;
 }
 
-export interface CircleItem extends Positionable {
-  radius: number;
-  type: 'circle';
-}
-
-export interface TriangleItem extends Positionable {
-  size: number;
-  type: 'triangle';
-}
-
-export type Item = SquareItem | CircleItem | TriangleItem;
-
-export interface WorkingAreaState {
-  items: Item[];
+export enum ItemType {
+  CIRCLE = 'circle',
+  SQUARE = 'square',
+  TRIANGLE = 'triangle'
 }
 
 interface Positionable {

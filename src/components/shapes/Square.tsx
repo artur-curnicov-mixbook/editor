@@ -1,10 +1,13 @@
-import { SquareItem } from '../../domain/WorkingArea';
+import { configuration } from '../../configuration/configuration';
+import { Item } from '../../domain/WorkingArea';
 
 interface SquareParameters {
-  item: SquareItem;
+  item: Item;
 }
 
 export function Square({ item }: SquareParameters): JSX.Element {
-  const { x, y, width } = item;
-  return <rect x={x} y={y} width={width} height={width} />;
+  const { x, y } = item;
+  return (
+    <rect x={x} y={y} width={configuration.square.width} height={configuration.square.width} />
+  );
 }

@@ -1,69 +1,30 @@
 import { useDispatch } from 'react-redux';
 import './ToolBox.css';
 import { addItem } from '../../state/ItemsReducer';
-
-const CIRCLE_SIZE = 3;
-const SQUARE_SIZE = 5;
-const TRIANGLE_SIZE = 6;
+import { ItemType } from '../../domain/WorkingArea';
 
 export function ToolBox(): JSX.Element {
   const dispatch = useDispatch();
 
-  const createSquare = (width: number): void => {
+  function createItem(type: ItemType): void {
     dispatch(
       addItem({
         x: Math.floor(Math.random() * 101),
         y: Math.floor(Math.random() * 101),
-        width,
-        type: 'square'
+        type
       })
     );
-  };
-
-  const createCircle = (radius: number): void => {
-    dispatch(
-      addItem({
-        x: Math.floor(Math.random() * 101),
-        y: Math.floor(Math.random() * 101),
-        radius,
-        type: 'circle'
-      })
-    );
-  };
-
-  const createTriangle = (size: number): void => {
-    dispatch(
-      addItem({
-        x: Math.floor(Math.random() * 101),
-        y: Math.floor(Math.random() * 101),
-        size,
-        type: 'triangle'
-      })
-    );
-  };
+  }
 
   return (
     <div className="toolbox" data-testid="toolbox">
-      <div className="shape" onClick={(): void => createSquare(SQUARE_SIZE)}>
-        <svg
-          width="50"
-          height="50"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlnsXlink="http://www.w3.org/1999/xlink">
-          <use xlinkHref="assets/shapes.svg#square" />
-        </svg>
-      </div>
-      <div className="shape" onClick={(): void => createCircle(CIRCLE_SIZE)}>
-        <svg width="50" height="50" version="1.1" xmlns="http://www.w3.org/2000/svg">
-          <use xlinkHref="assets/shapes.svg#circle" />
-        </svg>
-      </div>
-      <div className="shape" onClick={(): void => createTriangle(TRIANGLE_SIZE)}>
-        <svg width="50" height="50" version="1.1" xmlns="http://www.w3.org/2000/svg">
-          <use xlinkHref="assets/shapes.svg#triangle" />
-        </svg>
-      </div>
+      {Object.values(ItemType).map((itemType) => (
+        <div className="shape" key={itemType} onClick={(): void => createItem(itemType)}>
+          <svg width="50" height="50" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <use xlinkHref={`assets/shapes.svg#${itemType}`} />
+          </svg>
+        </div>
+      ))}
     </div>
   );
 }
