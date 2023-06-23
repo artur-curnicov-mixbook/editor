@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Item } from '../domain/WorkingArea';
+import { Item } from '../domain/Item';
 
 const initialState: WorkingAreaState = {
   items: []
