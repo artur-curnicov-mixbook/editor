@@ -1,5 +1,5 @@
 export enum ItemType {
-  CIRCLE = 'circle',
-  SQUARE = 'square',
-  TRIANGLE = 'triangle'
+  circle = 'circle',
+  square = 'square',
+  triangle = 'triangle'
 }
