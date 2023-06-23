@@ -1,7 +1,11 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '../../state';
 import './WorkingArea.css';
-import { configuration } from '../../configuration/configuration';
+import { Item } from '../../domain/Item';
+import { ItemType } from '../../domain/ItemType';
+import { Circle } from '../shapes/Circle';
+import { Triangle } from '../shapes/Triangle';
+import { Square } from '../shapes/Square';
 
 export function WorkingArea(): JSX.Element {
   const items = useSelector((state: RootState) => state.workingAreaItems.items);
@@ -15,10 +19,18 @@ export function WorkingArea(): JSX.Element {
         version="1.1"
         xmlns="http://www.w3.org/2000/svg">
         {items.map((item, i) => {
-          const Shape = configuration[item.type].viewComponent;
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          const Shape = mapping[item.type];
+
           return <Shape key={`${item.type}-${i}`} item={item} />;
         })}
       </svg>
     </div>
   );
 }
+
+const mapping: Record<ItemType, (props: { item: Item }) => JSX.Element> = {
+  circle: Circle,
+  triangle: Triangle,
+  square: Square
+};

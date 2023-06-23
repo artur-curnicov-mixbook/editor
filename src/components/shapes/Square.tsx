@@ -1,5 +1,4 @@
-import { configuration } from '../../configuration/configuration';
-import { Item } from '../../domain/WorkingArea';
+import { Item } from '../../domain/Item';
 
 interface SquareParameters {
   item: Item;
@@ -7,7 +6,5 @@ interface SquareParameters {
 
 export function Square({ item }: SquareParameters): JSX.Element {
   const { x, y } = item;
-  return (
-    <rect x={x} y={y} width={configuration.square.width} height={configuration.square.width} />
-  );
+  return <rect x={x} y={y} width={5} height={5} />;
 }
