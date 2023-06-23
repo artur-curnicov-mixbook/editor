@@ -15,9 +15,6 @@ export const workingAreaSlice = createSlice({
   }
 });
 
-export const { addItem } = workingAreaSlice.actions;
-export default workingAreaSlice.reducer;
-
 interface WorkingAreaState {
   items: Item[];
 }

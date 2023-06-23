@@ -19,9 +19,7 @@ export function WorkingArea(): JSX.Element {
         version="1.1"
         xmlns="http://www.w3.org/2000/svg">
         {items.map((item, i) => {
-          // eslint-disable-next-line @typescript-eslint/no-use-before-define
           const Shape = mapping[item.type];
-
           return <Shape key={`${item.type}-${i}`} item={item} />;
         })}
       </svg>
