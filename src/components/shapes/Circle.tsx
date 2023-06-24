@@ -2,11 +2,11 @@ import { Item } from '../../domain/Item';
 
 const RADIUS = 3;
 
-interface CircleParameters {
-  item: Item;
+export function Circle({ item }: Props): JSX.Element {
+  const { x, y } = item;
+  return <circle cx={x + RADIUS} cy={y + RADIUS} r={RADIUS} />;
 }
 
-export function Circle({ item }: CircleParameters): JSX.Element {
-  const { x, y } = item;
-  return <circle cx={x} cy={y} r={RADIUS} />;
+interface Props {
+  item: Item;
 }
