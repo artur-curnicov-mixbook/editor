@@ -2,11 +2,7 @@ import { Item } from '../../domain/Item';
 
 const SIZE = 6;
 
-interface TriangleParameters {
-  item: Item;
-}
-
-export function Triangle({ item }: TriangleParameters): JSX.Element {
+export function Triangle({ item }: Props): JSX.Element {
   const { x, y } = item;
 
   const getTrianglePoints = (): string => {
@@ -14,12 +10,19 @@ export function Triangle({ item }: TriangleParameters): JSX.Element {
     const halfSize = SIZE / 2;
     const halfHeight = height / 2;
 
-    const point1 = `${x},${y - halfHeight}`;
-    const point2 = `${x - halfSize},${y + halfHeight}`;
-    const point3 = `${x + halfSize},${y + halfHeight}`;
+    const translatedX = x + halfSize;
+    const translatedY = y + halfHeight;
+
+    const point1 = `${translatedX},${translatedY - halfHeight}`;
+    const point2 = `${translatedX - halfSize},${translatedY + halfHeight}`;
+    const point3 = `${translatedX + halfSize},${translatedY + halfHeight}`;
 
     return `${point1} ${point2} ${point3}`;
   };
 
   return <polygon points={getTrianglePoints()} />;
+}
+
+interface Props {
+  item: Item;
 }
