@@ -2,6 +2,10 @@ import { Item } from '../../domain/Item';
 
 const SIZE = 6;
 
+interface Props {
+  item: Item;
+}
+
 export function Triangle({ item }: Props): JSX.Element {
   const { x, y } = item;
 
@@ -21,8 +25,4 @@ export function Triangle({ item }: Props): JSX.Element {
   };
 
   return <polygon points={getTrianglePoints()} />;
-}
-
-interface Props {
-  item: Item;
 }

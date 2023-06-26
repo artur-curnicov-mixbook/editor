@@ -9,6 +9,12 @@ export interface DraggableData {
   initialY: number;
 }
 
+interface Props {
+  id: string;
+  name: ItemType;
+  children: React.ReactNode;
+}
+
 export function Draggable(props: Props): JSX.Element {
   const { id, name, children } = props;
   const draggableRef = useRef<HTMLElement>();
@@ -45,20 +51,17 @@ export function Draggable(props: Props): JSX.Element {
     [transform]
   );
 
-  const setRootRef = useCallback((element: HTMLElement | null) => {
-    setNodeRef(element);
-    draggableRef.current = element ?? undefined;
-  }, []);
+  const setRootRef = useCallback(
+    (element: HTMLElement | null) => {
+      setNodeRef(element);
+      draggableRef.current = element ?? undefined;
+    },
+    [setNodeRef]
+  );
 
   return (
     <div ref={setRootRef} style={style} {...listeners} {...attributes}>
       {children}
     </div>
   );
-}
-
-interface Props {
-  id: string;
-  name: ItemType;
-  children: React.ReactNode;
 }

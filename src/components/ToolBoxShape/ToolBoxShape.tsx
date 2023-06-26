@@ -2,6 +2,10 @@ import './ToolBoxShape.css';
 import { ItemType } from '../../domain/ItemType';
 import { Draggable } from '../Draggable/Draggable';
 
+interface Props {
+  itemType: ItemType;
+}
+
 export function ToolBoxShape(props: Props): JSX.Element {
   const { itemType } = props;
 
@@ -19,8 +23,4 @@ export function ToolBoxShape(props: Props): JSX.Element {
       </Draggable>
     </div>
   );
-}
-
-interface Props {
-  itemType: ItemType;
 }
