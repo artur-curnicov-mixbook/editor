@@ -1,12 +1,13 @@
 import './ToolBoxShape.css';
 import { ItemType } from '../../domain/ItemType';
 import { Draggable } from '../Draggable/Draggable';
+
 export function ToolBoxShape(props: Props): JSX.Element {
   const { itemType } = props;
 
   return (
     <div className="shape">
-      <Draggable name={itemType} key={itemType} id={itemType}>
+      <Draggable name={itemType} id={itemType}>
         <svg
           className="draggable-element"
           width="50"
