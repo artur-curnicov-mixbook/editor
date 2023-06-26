@@ -1,44 +1,64 @@
 import { useDraggable } from '@dnd-kit/core';
 
-import { useEffect, useRef, useState } from 'react';
+import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ItemType } from '../../domain/ItemType';
 
-export const Draggable = (props: Props): JSX.Element => {
-  const draggableRef = useRef<HTMLDivElement>(null);
+export interface DraggableData {
+  type: ItemType;
+  initialX: number;
+  initialY: number;
+}
+
+export function Draggable(props: Props): JSX.Element {
+  const { id, name, children } = props;
+  const draggableRef = useRef<HTMLElement>();
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    if (draggableRef.current) {
-      const boundingClientRect = draggableRef.current.getBoundingClientRect();
-      setPosition({
-        x: boundingClientRect.x,
-        y: boundingClientRect.y
-      });
-    }
-  }, [draggableRef]);
+    const { current: draggableElement } = draggableRef;
 
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: props.id,
-    data: {
-      type: props.name,
+    if (!draggableElement) return;
+
+    const boundingClientRect = draggableElement.getBoundingClientRect();
+
+    setPosition({
+      x: boundingClientRect.x,
+      y: boundingClientRect.y
+    });
+  }, []);
+
+  const data = useMemo<DraggableData>(
+    () => ({
+      type: name,
       initialX: position.x,
       initialY: position.y
-    }
-  });
+    }),
+    [name, position]
+  );
 
-  const style = transform
-    ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
-    : {};
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id, data });
+
+  const style: CSSProperties | undefined = useMemo(
+    () =>
+      transform ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` } : undefined,
+    [transform]
+  );
+
+  const setRootRef = useCallback((element: HTMLElement | null) => {
+    setNodeRef(element);
+    draggableRef.current = element ?? undefined;
+  }, []);
 
   return (
-    <div ref={setNodeRef} style={{ ...style }} {...listeners} {...attributes}>
-      <div ref={draggableRef}>{props.children}</div>
+    <div ref={setRootRef} style={style} {...listeners} {...attributes}>
+      {children}
     </div>
   );
-};
+}
 
 interface Props {
   id: string;
-  name: string;
+  name: ItemType;
   children: React.ReactNode;
 }

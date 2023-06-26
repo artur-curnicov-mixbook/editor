@@ -1,35 +1,18 @@
-import { Positionable } from '../domain/Positionable';
-
-export function calculateSvgCoordinates(
-  initialPosition: Positionable,
-  deltaPosition: Positionable,
-  svgRef: React.RefObject<SVGSVGElement>
-): number[] {
-  const screenX = initialPosition.x + deltaPosition.x;
-  const screenY = initialPosition.y + deltaPosition.y;
-
-  const svgCoordonates = mapScreenToSvgCoordinates(screenX, screenY, svgRef);
-
-  return [svgCoordonates.x, svgCoordonates.y];
-}
-
-function mapScreenToSvgCoordinates(
+export function mapScreenToSvgCoordinates(
   screenX: number,
   screenY: number,
-  svgRef: React.RefObject<SVGSVGElement>
+  svgElement: SVGSVGElement
 ): SVGPoint {
-  if (svgRef.current) {
-    const svg = svgRef.current;
-    const point = svg.createSVGPoint();
-    point.x = screenX;
-    point.y = screenY;
+  const point = svgElement.createSVGPoint();
 
-    const screenCTM = svg.getScreenCTM();
-    if (screenCTM) {
-      const svgPoint = point.matrixTransform(screenCTM.inverse());
-      return svgPoint;
-    }
-  }
+  point.x = screenX;
+  point.y = screenY;
 
-  throw Error('Can not map screen coordinates to SVG coordinates');
+  const screenCTM = svgElement.getScreenCTM();
+
+  if (!screenCTM) throw new Error('Unable to get screen CTM');
+
+  const svgPoint = point.matrixTransform(screenCTM.inverse());
+
+  return svgPoint;
 }
