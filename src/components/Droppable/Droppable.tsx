@@ -1,6 +1,10 @@
 import { useDroppable } from '@dnd-kit/core';
 
-export const Droppable = (props: Props): JSX.Element => {
+interface Props {
+  children: React.ReactNode;
+}
+
+export function Droppable(props: Props): JSX.Element {
   const { children } = props;
 
   const { setNodeRef } = useDroppable({ id: 'droppable' });
@@ -10,8 +14,4 @@ export const Droppable = (props: Props): JSX.Element => {
       {children}
     </div>
   );
-};
-
-interface Props {
-  children: React.ReactNode;
 }

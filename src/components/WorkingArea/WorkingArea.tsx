@@ -17,9 +17,12 @@ export function WorkingArea(): JSX.Element {
   const dispatch = useDispatch();
   const workingAreaRef = useRef<SVGSVGElement>(null);
 
-  const createItem = useCallback((x: number, y: number, type: ItemType) => {
-    dispatch(workingAreaSlice.actions.addItem({ x, y, type }));
-  }, []);
+  const createItem = useCallback(
+    (x: number, y: number, type: ItemType) => {
+      dispatch(workingAreaSlice.actions.addItem({ x, y, type }));
+    },
+    [dispatch]
+  );
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
