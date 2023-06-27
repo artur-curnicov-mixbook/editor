@@ -12,12 +12,17 @@ export const workingAreaSlice = createSlice({
     addItem: (state: WorkingAreaState, action: PayloadAction<Item>) => {
       state.items = [...state.items, action.payload];
     },
-    updateItems: (state: WorkingAreaState, action: PayloadAction<Item[]>) => {
-      state.items = action.payload;
+    updateItems: (state: WorkingAreaState, action: PayloadAction<UpdateItemPayload>) => {
+      state.items[action.payload.index] = action.payload.item;
     }
   }
 });
 
 interface WorkingAreaState {
   items: Item[];
+}
+
+interface UpdateItemPayload {
+  item: Item;
+  index: number;
 }
