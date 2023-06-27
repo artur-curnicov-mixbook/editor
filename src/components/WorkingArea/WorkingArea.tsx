@@ -5,8 +5,7 @@ import { ItemType } from '../../domain/ItemType';
 import { Circle } from '../shapes/Circle';
 import { Triangle } from '../shapes/Triangle';
 import { Square } from '../shapes/Square';
-import { Droppable } from '../Droppable/Droppable';
-import { DataRef, DragEndEvent, useDndMonitor } from '@dnd-kit/core';
+import { DataRef, DragEndEvent, useDndMonitor, useDroppable } from '@dnd-kit/core';
 import { workingAreaSlice } from '../../state/workingAreaSlice';
 import { useCallback, useRef, useEffect } from 'react';
 import { mapScreenToSvgCoordinates } from '../../application/utils';
@@ -17,11 +16,12 @@ export function WorkingArea(): JSX.Element {
   const items = useSelector((state: RootState) => state.workingAreaItems.items);
   const dispatch = useDispatch();
   const workingAreaRef = useRef<SVGSVGElement>(null);
+  const { setNodeRef: droppableRef } = useDroppable({ id: 'droppable' });
 
   const createItem = useCallback(
     (x: number, y: number, type: ItemType) => {
       dispatch(
-        workingAreaSlice.actions.addItem({ x, y, type, isMoving: false, xOffset: 0, yOffset: 0 })
+        workingAreaSlice.actions.addItem({ x, y, type, isDragged: false, xOffset: 0, yOffset: 0 })
       );
     },
     [dispatch]
@@ -86,7 +86,7 @@ export function WorkingArea(): JSX.Element {
   }, [dispatch, handlePointerEvent, items]);
 
   return (
-    <Droppable>
+    <div className="working-area" ref={droppableRef} data-testid="workingarea">
       <svg
         ref={workingAreaRef}
         width="100%"
@@ -99,7 +99,7 @@ export function WorkingArea(): JSX.Element {
           return <Shape key={`${item.type}-${i}`} item={item} index={i} />;
         })}
       </svg>
-    </Droppable>
+    </div>
   );
 }
 

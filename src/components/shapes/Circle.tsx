@@ -11,7 +11,7 @@ interface Props {
 export function Circle({ item, index }: Props): JSX.Element {
   const { x, y } = item;
 
-  const active = useMemo<string>(() => (item.isMoving ? 'active' : ''), [item]);
+  const active = useMemo<string>(() => (item.isDragged ? 'active' : ''), [item]);
 
   return (
     <circle

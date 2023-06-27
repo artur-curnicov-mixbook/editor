@@ -14,7 +14,7 @@ interface Props {
 export function Triangle({ item, index }: Props): JSX.Element {
   const { x, y } = item;
 
-  const active = useMemo<string>(() => (item.isMoving ? 'active' : ''), [item]);
+  const active = useMemo<string>(() => (item.isDragged ? 'active' : ''), [item]);
   const trianglePoints = useMemo((): string => {
     const translatedX = x + HALF_SIZE;
     const translatedY = y + HALF_HEIGHT;
