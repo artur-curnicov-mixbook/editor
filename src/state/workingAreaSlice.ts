@@ -12,7 +12,7 @@ export const workingAreaSlice = createSlice({
     addItem: (state: WorkingAreaState, action: PayloadAction<Item>) => {
       state.items = [...state.items, action.payload];
     },
-    updateElements: (state: WorkingAreaState, action: PayloadAction<Item[]>) => {
+    updateItems: (state: WorkingAreaState, action: PayloadAction<Item[]>) => {
       state.items = action.payload;
     }
   }
