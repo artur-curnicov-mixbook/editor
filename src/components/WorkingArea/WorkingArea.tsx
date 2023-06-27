@@ -8,7 +8,7 @@ import { Square } from '../shapes/Square';
 import { Droppable } from '../Droppable/Droppable';
 import { DataRef, DragEndEvent, useDndMonitor } from '@dnd-kit/core';
 import { workingAreaSlice } from '../../state/workingAreaSlice';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, PointerEvent } from 'react';
 import { mapScreenToSvgCoordinates } from '../../application/utils';
 import { DraggableData } from '../Draggable/Draggable';
 
@@ -19,7 +19,9 @@ export function WorkingArea(): JSX.Element {
 
   const createItem = useCallback(
     (x: number, y: number, type: ItemType) => {
-      dispatch(workingAreaSlice.actions.addItem({ x, y, type }));
+      dispatch(
+        workingAreaSlice.actions.addItem({ x, y, type, isMoving: false, xOffset: 0, yOffset: 0 })
+      );
     },
     [dispatch]
   );
@@ -50,6 +52,67 @@ export function WorkingArea(): JSX.Element {
     onDragEnd: handleDragEnd
   });
 
+  const handlePointerDown = useCallback(
+    (elementIndex: number, event: PointerEvent<SVGElement>) => {
+      const { current: workingAreaElement } = workingAreaRef;
+
+      if (!workingAreaElement) return;
+
+      const newElements = items.map((item, currentElementIndex) => {
+        if (elementIndex !== currentElementIndex) return item;
+
+        const { x, y } = getCoordinates(event, workingAreaElement);
+        event.currentTarget.setPointerCapture(event.pointerId);
+
+        return { ...item, xOffset: x, yOffset: y, isMoving: true };
+      });
+
+      dispatch(workingAreaSlice.actions.updateElements(newElements));
+    },
+    [dispatch, items]
+  );
+
+  const handlePointerMove = useCallback(
+    (elementIndex: number, event: PointerEvent<SVGElement>) => {
+      const { current: workingAreaElement } = workingAreaRef;
+
+      if (!workingAreaElement) return;
+
+      const newElements = items.map((item, currentElementIndex) => {
+        if (elementIndex !== currentElementIndex || item.isMoving === false) return item;
+
+        const { x, y } = getCoordinates(event, workingAreaElement);
+        event.currentTarget.setPointerCapture(event.pointerId);
+
+        return {
+          ...item,
+          x: item.x - (item.xOffset - x),
+          y: item.y - (item.yOffset - y)
+        };
+      });
+
+      dispatch(workingAreaSlice.actions.updateElements(newElements));
+    },
+    [dispatch, items]
+  );
+
+  const handlePointerUp = useCallback(
+    (elementIndex: number) => {
+      const { current: workingAreaElement } = workingAreaRef;
+
+      if (!workingAreaElement) return;
+
+      const newElements = items.map((item, currentElementIndex) => {
+        if (elementIndex !== currentElementIndex) return item;
+
+        return { ...item, isMoving: false };
+      });
+
+      dispatch(workingAreaSlice.actions.updateElements(newElements));
+    },
+    [dispatch, items]
+  );
+
   return (
     <Droppable>
       <svg
@@ -61,7 +124,17 @@ export function WorkingArea(): JSX.Element {
         xmlns="http://www.w3.org/2000/svg">
         {items.map((item, i) => {
           const Shape = ITEM_TYPE_TO_SHAPE[item.type];
-          return <Shape key={`${item.type}-${i}`} item={item} />;
+          return (
+            <Shape
+              key={`${item.type}-${i}`}
+              item={item}
+              draggableHandlers={{
+                onPointerDown: (evt: PointerEvent<SVGElement>): void => handlePointerDown(i, evt),
+                onPointerUp: (): void => handlePointerUp(i),
+                onPointerMove: (evt: PointerEvent<SVGElement>): void => handlePointerMove(i, evt)
+              }}
+            />
+          );
         })}
       </svg>
     </Droppable>
@@ -73,3 +146,11 @@ const ITEM_TYPE_TO_SHAPE = {
   triangle: Triangle,
   square: Square
 };
+
+function getCoordinates(event: PointerEvent<SVGElement>, svgElement: SVGSVGElement): SVGPoint {
+  const boundingClientRect = event.currentTarget.getBoundingClientRect();
+  const screenX = event.clientX - boundingClientRect.left;
+  const screenY = event.clientY - boundingClientRect.top;
+
+  return mapScreenToSvgCoordinates(screenX, screenY, svgElement);
+}

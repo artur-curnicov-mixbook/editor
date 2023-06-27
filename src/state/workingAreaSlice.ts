@@ -11,6 +11,9 @@ export const workingAreaSlice = createSlice({
   reducers: {
     addItem: (state: WorkingAreaState, action: PayloadAction<Item>) => {
       state.items = [...state.items, action.payload];
+    },
+    updateElements: (state: WorkingAreaState, action: PayloadAction<Item[]>) => {
+      state.items = action.payload;
     }
   }
 });

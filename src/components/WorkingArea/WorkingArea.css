@@ -4,9 +4,15 @@
     #ecf0f1;
 }
 
-.working-area svg {
+.working-area .shape {
   display: block;
   stroke: #88a1c7;
   fill: #dce8fa;
   stroke-width: 0.4px;
+  cursor: move;
+  stroke-linecap: round;
+}
+
+.working-area .shape.active {
+  stroke-dasharray: 1.2;
 }
