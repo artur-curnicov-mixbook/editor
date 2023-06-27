@@ -10,6 +10,6 @@
   stroke-width: 3px;
 }
 
-.draggable-element {
+.toolbox .draggable-element {
   cursor: pointer;
 }
