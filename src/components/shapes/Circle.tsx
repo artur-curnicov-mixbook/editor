@@ -1,22 +1,15 @@
-import { useMemo, PointerEvent } from 'react';
+import { useMemo } from 'react';
 import { Item } from '../../domain/Item';
 
 const RADIUS = 3;
 
 interface Props {
   item: Item;
-  draggableHandlers: DraggableHandlers;
+  index: number;
 }
 
-interface DraggableHandlers {
-  onPointerDown: (evt: PointerEvent<SVGElement>) => void;
-  onPointerUp: (evt: PointerEvent<SVGElement>) => void;
-  onPointerMove: (evt: PointerEvent<SVGElement>) => void;
-}
-
-export function Circle({ item, draggableHandlers }: Props): JSX.Element {
+export function Circle({ item, index }: Props): JSX.Element {
   const { x, y } = item;
-  const { onPointerDown, onPointerUp, onPointerMove } = draggableHandlers;
 
   const active = useMemo<string>(() => (item.isMoving ? 'active' : ''), [item]);
 
@@ -26,9 +19,7 @@ export function Circle({ item, draggableHandlers }: Props): JSX.Element {
       cx={x + RADIUS}
       cy={y + RADIUS}
       r={RADIUS}
-      onPointerDown={onPointerDown}
-      onPointerUp={onPointerUp}
-      onPointerMove={onPointerMove}
+      data-index={index}
     />
   );
 }

@@ -1,4 +1,4 @@
-import { useMemo, PointerEvent } from 'react';
+import { useMemo } from 'react';
 import { Item } from '../../domain/Item';
 
 const SIZE = 6;
@@ -8,18 +8,11 @@ const HALF_HEIGHT = HEIGHT / 2;
 
 interface Props {
   item: Item;
-  draggableHandlers: DraggableHandlers;
+  index: number;
 }
 
-interface DraggableHandlers {
-  onPointerDown: (evt: PointerEvent<SVGElement>) => void;
-  onPointerUp: (evt: PointerEvent<SVGElement>) => void;
-  onPointerMove: (evt: PointerEvent<SVGElement>) => void;
-}
-
-export function Triangle({ item, draggableHandlers }: Props): JSX.Element {
+export function Triangle({ item, index }: Props): JSX.Element {
   const { x, y } = item;
-  const { onPointerDown, onPointerUp, onPointerMove } = draggableHandlers;
 
   const active = useMemo<string>(() => (item.isMoving ? 'active' : ''), [item]);
   const trianglePoints = useMemo((): string => {
@@ -33,13 +26,5 @@ export function Triangle({ item, draggableHandlers }: Props): JSX.Element {
     return `${point1} ${point2} ${point3}`;
   }, [x, y]);
 
-  return (
-    <polygon
-      className={`shape ${active}`}
-      points={trianglePoints}
-      onPointerDown={onPointerDown}
-      onPointerUp={onPointerUp}
-      onPointerMove={onPointerMove}
-    />
-  );
+  return <polygon className={`shape ${active}`} points={trianglePoints} data-index={index} />;
 }
