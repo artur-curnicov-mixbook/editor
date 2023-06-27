@@ -8,13 +8,12 @@ import { Square } from '../shapes/Square';
 import { Droppable } from '../Droppable/Droppable';
 import { DataRef, DragEndEvent, useDndMonitor } from '@dnd-kit/core';
 import { workingAreaSlice } from '../../state/workingAreaSlice';
-import { useCallback, useRef, useEffect, useState } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { mapScreenToSvgCoordinates } from '../../application/utils';
 import { DraggableData } from '../Draggable/Draggable';
 import { updateItem } from '../../domain/updateItemData';
 
 export function WorkingArea(): JSX.Element {
-  const [activeItemIndex, setActiveItemIndex] = useState<number | null>(null);
   const items = useSelector((state: RootState) => state.workingAreaItems.items);
   const dispatch = useDispatch();
   const workingAreaRef = useRef<SVGSVGElement>(null);
@@ -27,41 +26,6 @@ export function WorkingArea(): JSX.Element {
     },
     [dispatch]
   );
-
-  const handlePointerEvent = useCallback(
-    (event: PointerEvent): void => {
-      const clickedItemIndex = (event.target as HTMLElement).dataset.index;
-      const { current: workingAreaElement } = workingAreaRef;
-
-      if (clickedItemIndex === undefined) return;
-      if (!workingAreaElement) return;
-
-      setActiveItemIndex(parseInt(clickedItemIndex));
-
-      const updatedItems = items.map((item, currentElementIndex) => {
-        return activeItemIndex === currentElementIndex
-          ? updateItem(event, item, workingAreaElement)
-          : item;
-      });
-
-      dispatch(workingAreaSlice.actions.updateItems(updatedItems));
-    },
-    [activeItemIndex, dispatch, items]
-  );
-
-  useEffect(() => {
-    const win: Window = window;
-
-    win.addEventListener('pointerdown', handlePointerEvent);
-    win.addEventListener('pointermove', handlePointerEvent);
-    win.addEventListener('pointerup', handlePointerEvent);
-
-    return () => {
-      win.removeEventListener('pointerdown', handlePointerEvent);
-      win.removeEventListener('pointermove', handlePointerEvent);
-      win.removeEventListener('pointerup', handlePointerEvent);
-    };
-  }, [activeItemIndex, dispatch, handlePointerEvent, items]);
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -88,6 +52,38 @@ export function WorkingArea(): JSX.Element {
   useDndMonitor({
     onDragEnd: handleDragEnd
   });
+
+  const handlePointerEvent = useCallback(
+    (event: PointerEvent): void => {
+      const clickedItemIndex = (event.target as HTMLElement).dataset.index;
+      const { current: workingAreaElement } = workingAreaRef;
+
+      if (clickedItemIndex === undefined) return;
+      if (!workingAreaElement) return;
+
+      const intClickedItemIndex = parseInt(clickedItemIndex);
+      const updatedItem = updateItem(event, items[intClickedItemIndex], workingAreaElement);
+
+      dispatch(
+        workingAreaSlice.actions.updateItems({ item: updatedItem, index: intClickedItemIndex })
+      );
+    },
+    [dispatch, items]
+  );
+
+  useEffect(() => {
+    const win: Window = window;
+
+    win.addEventListener('pointerdown', handlePointerEvent);
+    win.addEventListener('pointermove', handlePointerEvent);
+    win.addEventListener('pointerup', handlePointerEvent);
+
+    return () => {
+      win.removeEventListener('pointerdown', handlePointerEvent);
+      win.removeEventListener('pointermove', handlePointerEvent);
+      win.removeEventListener('pointerup', handlePointerEvent);
+    };
+  }, [dispatch, handlePointerEvent, items]);
 
   return (
     <Droppable>
