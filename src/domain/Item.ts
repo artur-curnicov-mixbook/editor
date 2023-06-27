@@ -1,7 +1,7 @@
 import { ItemType } from './ItemType';
-import { Moveable } from './Moveable';
+import { Draggable } from './Draggable';
 import { Positionable } from './Positionable';
 
-export interface Item extends Positionable, Moveable {
+export interface Item extends Positionable, Draggable {
   type: ItemType;
 }

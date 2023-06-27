@@ -10,7 +10,7 @@ export function updateItem(
     case 'pointerdown':
       return handlePointerDown(event, item, workingAreaElement);
     case 'pointermove':
-      if (item.isMoving) return handlePointerMove(event, item, workingAreaElement);
+      if (item.isDragged) return handlePointerMove(event, item, workingAreaElement);
       return item;
     case 'pointerup':
       return handlePointerUp(item);
@@ -27,7 +27,7 @@ const handlePointerDown = (
   const { x, y } = mapScreenToSvgCoordinates(event.movementX, event.movementY, workingAreaElement);
   (event.target as Element).setPointerCapture(event.pointerId);
 
-  return { ...item, xOffset: x, yOffset: y, isMoving: true };
+  return { ...item, xOffset: x, yOffset: y, isDragged: true };
 };
 
 const handlePointerMove = (
@@ -45,5 +45,5 @@ const handlePointerMove = (
 };
 
 const handlePointerUp = (item: Item): Item => {
-  return { ...item, isMoving: false };
+  return { ...item, isDragged: false };
 };
