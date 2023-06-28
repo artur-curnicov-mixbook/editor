@@ -13,7 +13,11 @@ export const workingAreaSlice = createSlice({
       state.items = [...state.items, action.payload];
     },
     updateItems: (state: WorkingAreaState, action: PayloadAction<UpdateItemPayload>) => {
-      state.items[action.payload.index] = action.payload.item;
+      const { index, x, y } = action.payload;
+
+      const item = state.items[index];
+
+      state.items[index] = { ...item, x, y };
     }
   }
 });
@@ -23,6 +27,7 @@ interface WorkingAreaState {
 }
 
 interface UpdateItemPayload {
-  item: Item;
   index: number;
+  x: number;
+  y: number;
 }

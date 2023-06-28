@@ -7,10 +7,11 @@ import { Triangle } from '../shapes/Triangle';
 import { Square } from '../shapes/Square';
 import { DataRef, DragEndEvent, useDndMonitor, useDroppable } from '@dnd-kit/core';
 import { workingAreaSlice } from '../../state/workingAreaSlice';
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef, useEffect, CSSProperties, useState } from 'react';
 import { mapScreenToSvgCoordinates } from '../../application/utils';
 import { DraggableData } from '../Draggable/Draggable';
 import { updateItem } from '../../domain/updateItemData';
+import { Item } from '../../domain/Item';
 
 export function WorkingArea(): JSX.Element {
   const items = useSelector((state: RootState) => state.workingAreaItems.items);
@@ -20,9 +21,7 @@ export function WorkingArea(): JSX.Element {
 
   const createItem = useCallback(
     (x: number, y: number, type: ItemType) => {
-      dispatch(
-        workingAreaSlice.actions.addItem({ x, y, type, isDragged: false, xOffset: 0, yOffset: 0 })
-      );
+      dispatch(workingAreaSlice.actions.addItem({ x, y, type, xOffset: 0, yOffset: 0 }));
     },
     [dispatch]
   );
@@ -53,37 +52,28 @@ export function WorkingArea(): JSX.Element {
     onDragEnd: handleDragEnd
   });
 
-  const handlePointerEvent = useCallback(
+  const [draggingItemIndex, setDraggingItemIndex] = useState<number>();
+
+  const handlePointerMove = useCallback(
     (event: PointerEvent): void => {
-      const clickedItemIndex = (event.target as HTMLElement).dataset.index;
       const { current: workingAreaElement } = workingAreaRef;
 
-      if (clickedItemIndex === undefined) return;
       if (!workingAreaElement) return;
+      if (!draggingItemIndex) return;
 
-      const intClickedItemIndex = parseInt(clickedItemIndex);
-      const updatedItem = updateItem(event, items[intClickedItemIndex], workingAreaElement);
+      const { x, y } = mapScreenToSvgCoordinates(event.clientX, event.clientX, workingAreaElement);
 
-      dispatch(
-        workingAreaSlice.actions.updateItems({ item: updatedItem, index: intClickedItemIndex })
-      );
+      dispatch(workingAreaSlice.actions.updateItems({ index: draggingItemIndex, x, y }));
     },
-    [dispatch, items]
+    [dispatch, draggingItemIndex]
   );
 
-  useEffect(() => {
-    const win: Window = window;
+  const handlePointerUp = useCallback(() => {
+    setDraggingItemIndex(undefined);
+  }, []);
 
-    win.addEventListener('pointerdown', handlePointerEvent);
-    win.addEventListener('pointermove', handlePointerEvent);
-    win.addEventListener('pointerup', handlePointerEvent);
-
-    return () => {
-      win.removeEventListener('pointerdown', handlePointerEvent);
-      win.removeEventListener('pointermove', handlePointerEvent);
-      win.removeEventListener('pointerup', handlePointerEvent);
-    };
-  }, [dispatch, handlePointerEvent, items]);
+  useWindowEventListener('pointermove', handlePointerMove);
+  useWindowEventListener('pointerup', handlePointerUp);
 
   return (
     <div className="working-area" ref={droppableRef} data-testid="workingarea">
@@ -94,12 +84,36 @@ export function WorkingArea(): JSX.Element {
         viewBox="0 0 100 100"
         version="1.1"
         xmlns="http://www.w3.org/2000/svg">
-        {items.map((item, i) => {
-          const Shape = ITEM_TYPE_TO_SHAPE[item.type];
-          return <Shape key={`${item.type}-${i}`} item={item} index={i} />;
-        })}
+        {items.map((item, index) => (
+          <Shape
+            key={`${item.type}-${index}`}
+            item={item}
+            index={index}
+            onPointerDown={setDraggingItemIndex}
+          />
+        ))}
       </svg>
     </div>
+  );
+}
+
+function Shape(props: {
+  item: Item;
+  index: number;
+  onPointerDown(index: number): void;
+}): JSX.Element {
+  const { item, index, onPointerDown } = props;
+
+  const handlePointerDown = useCallback(() => {
+    onPointerDown(index);
+  }, [index, onPointerDown]);
+
+  const Item2 = ITEM_TYPE_TO_SHAPE[item.type];
+
+  return (
+    <g onPointerDown={handlePointerDown}>
+      <Item2 item={item} index={index} />
+    </g>
   );
 }
 
@@ -108,3 +122,16 @@ const ITEM_TYPE_TO_SHAPE = {
   triangle: Triangle,
   square: Square
 };
+
+function useWindowEventListener<T extends keyof GlobalEventHandlersEventMap>(
+  eventName: T,
+  listener: (event: GlobalEventHandlersEventMap[T]) => void
+): void {
+  useEffect(() => {
+    window.addEventListener(eventName, listener);
+
+    return (): void => {
+      window.removeEventListener(eventName, listener);
+    };
+  }, [eventName, listener]);
+}
