@@ -5,21 +5,12 @@ const RADIUS = 3;
 
 interface Props {
   item: Item;
-  index: number;
+  isActive: boolean;
 }
 
-export function Circle({ item, index }: Props): JSX.Element {
+export function Circle({ item, isActive }: Props): JSX.Element {
   const { x, y } = item;
+  const active = useMemo<string>(() => (isActive ? 'active' : ''), [isActive]);
 
-  const active = useMemo<string>(() => (item.isDragged ? 'active' : ''), [item]);
-
-  return (
-    <circle
-      className={`shape ${active}`}
-      cx={x + RADIUS}
-      cy={y + RADIUS}
-      r={RADIUS}
-      data-index={index}
-    />
-  );
+  return <circle className={`shape ${active}`} cx={x + RADIUS} cy={y + RADIUS} r={RADIUS} />;
 }

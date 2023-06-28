@@ -5,15 +5,12 @@ const SIZE = 5;
 
 interface Props {
   item: Item;
-  index: number;
+  isActive: boolean;
 }
 
-export function Square({ item, index }: Props): JSX.Element {
+export function Square({ item, isActive }: Props): JSX.Element {
   const { x, y } = item;
+  const active = useMemo<string>(() => (isActive ? 'active' : ''), [isActive]);
 
-  const active = useMemo<string>(() => (item.isDragged ? 'active' : ''), [item]);
-
-  return (
-    <rect className={`shape ${active}`} x={x} y={y} width={SIZE} height={SIZE} data-index={index} />
-  );
+  return <rect className={`shape ${active}`} x={x} y={y} width={SIZE} height={SIZE} />;
 }
