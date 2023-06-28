@@ -1,5 +1,5 @@
 export interface Draggable {
-  isDragged: boolean;
+  isDragged?: boolean;
   xOffset: number;
   yOffset: number;
 }
