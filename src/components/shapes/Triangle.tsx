@@ -8,13 +8,13 @@ const HALF_HEIGHT = HEIGHT / 2;
 
 interface Props {
   item: Item;
-  index: number;
+  isActive: boolean;
 }
 
-export function Triangle({ item, index }: Props): JSX.Element {
+export function Triangle({ item, isActive }: Props): JSX.Element {
   const { x, y } = item;
+  const active = useMemo<string>(() => (isActive ? 'active' : ''), [isActive]);
 
-  const active = useMemo<string>(() => (item.isDragged ? 'active' : ''), [item]);
   const trianglePoints = useMemo((): string => {
     const translatedX = x + HALF_SIZE;
     const translatedY = y + HALF_HEIGHT;
@@ -26,5 +26,5 @@ export function Triangle({ item, index }: Props): JSX.Element {
     return `${point1} ${point2} ${point3}`;
   }, [x, y]);
 
-  return <polygon className={`shape ${active}`} points={trianglePoints} data-index={index} />;
+  return <polygon className={`shape ${active}`} points={trianglePoints} />;
 }
