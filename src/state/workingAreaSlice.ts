@@ -2,17 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Item } from '../domain/Item';
 
 const initialState: WorkingAreaState = {
-  items: [],
-  draggingItemIndex: undefined
+  items: []
 };
 
 export const workingAreaSlice = createSlice({
   name: 'workingAreaItems',
   initialState,
   reducers: {
-    setDraggingItemIndex: (state: WorkingAreaState, action: PayloadAction<number | undefined>) => {
-      state.draggingItemIndex = action.payload;
-    },
     addItem: (state: WorkingAreaState, action: PayloadAction<Item>) => {
       state.items = [...state.items, action.payload];
     },
@@ -27,7 +23,6 @@ export const workingAreaSlice = createSlice({
 
 interface WorkingAreaState {
   items: Item[];
-  draggingItemIndex: number | undefined;
 }
 
 interface UpdateItemPayload {

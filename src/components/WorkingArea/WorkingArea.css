@@ -13,6 +13,6 @@
   stroke-linecap: round;
 }
 
-.working-area .shape.active {
+.moving .shape {
   stroke-dasharray: 1.2;
 }

@@ -15,6 +15,7 @@ export function WorkingArea(): JSX.Element {
   const dispatch = useDispatch();
   const workingAreaRef = useRef<SVGSVGElement>(null);
   const { setNodeRef: droppableRef } = useDroppable({ id: 'droppable' });
+  const [movingItem, setMovingItem] = useState<MovingItem>();
 
   const createItem = useCallback(
     (x: number, y: number, type: ItemType) => {
@@ -49,8 +50,6 @@ export function WorkingArea(): JSX.Element {
     onDragEnd: handleDragEnd
   });
 
-  const [movingItem, setMovingItem] = useState<MovingItem>();
-
   const handlePointerMove = useCallback(
     (event: PointerEvent): void => {
       const { current: workingAreaElement } = workingAreaRef;
@@ -59,7 +58,7 @@ export function WorkingArea(): JSX.Element {
       if (!movingItem) return;
 
       const { clientX, clientY } = event;
-      const { index, innerOffsetX: innerOffsetX, innerOffsetY: innerOffsetY } = movingItem;
+      const { index, innerOffsetX, innerOffsetY } = movingItem;
 
       const { x, y } = mapScreenToSvgCoordinates(
         clientX - innerOffsetX,
@@ -79,7 +78,7 @@ export function WorkingArea(): JSX.Element {
   useWindowEventListener('pointermove', handlePointerMove);
   useWindowEventListener('pointerup', handlePointerUp);
 
-  const handlePointerDown = useCallback(
+  const handleDragStart = useCallback(
     (index: number, innerOffsetX: number, innerOffsetY: number) => {
       setMovingItem({ index, innerOffsetX, innerOffsetY });
     },
@@ -95,14 +94,13 @@ export function WorkingArea(): JSX.Element {
         viewBox="0 0 100 100"
         version="1.1"
         xmlns="http://www.w3.org/2000/svg">
-        <rect x={0} y={0} width={100} height={100} fill="red" />
         {items.map((item, index) => (
           <Shape
             key={`${item.type}-${index}`}
             item={item}
             index={index}
-            isActive={movingItem?.index === index}
-            onPointerDown={handlePointerDown}
+            isMoving={movingItem?.index === index}
+            handleDragStart={handleDragStart}
           />
         ))}
       </svg>
