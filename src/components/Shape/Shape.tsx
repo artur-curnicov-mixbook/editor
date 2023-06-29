@@ -3,6 +3,8 @@ import { Item } from '../../domain/Item';
 import { Circle } from '../shapes/Circle';
 import { Square } from '../shapes/Square';
 import { Triangle } from '../shapes/Triangle';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../state';
 
 interface Props {
   item: Item;
@@ -15,7 +17,13 @@ export function Shape(props: Props): JSX.Element {
   const { item, index, isMoving, handleDragStart } = props;
 
   const rootRef = useRef<SVGGElement>(null);
+  const { selectedItemIndex } = useSelector((state: RootState) => state.workingAreaItems);
+
   const moving = useMemo<string>(() => (isMoving ? 'moving' : ''), [isMoving]);
+  const selected = useMemo<string>(
+    () => (index === selectedItemIndex ? 'selected' : ''),
+    [index, selectedItemIndex]
+  );
 
   const handlePointerDown = useCallback(
     (event: React.PointerEvent) => {
@@ -33,7 +41,7 @@ export function Shape(props: Props): JSX.Element {
   const ConcreteShape = ITEM_TYPE_TO_SHAPE[item.type];
 
   return (
-    <g ref={rootRef} onPointerDown={handlePointerDown} className={moving}>
+    <g ref={rootRef} onPointerDown={handlePointerDown} className={`${moving} ${selected}`}>
       <ConcreteShape item={item} />
     </g>
   );

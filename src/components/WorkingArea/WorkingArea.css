@@ -16,3 +16,8 @@
 .moving .shape {
   stroke-dasharray: 1.2;
 }
+
+.selected .shape {
+  stroke: #c79388;
+  fill: #fadcdc;
+}

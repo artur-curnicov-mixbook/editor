@@ -81,9 +81,14 @@ export function WorkingArea(): JSX.Element {
   const handleDragStart = useCallback(
     (index: number, innerOffsetX: number, innerOffsetY: number) => {
       setMovingItem({ index, innerOffsetX, innerOffsetY });
+      dispatch(workingAreaSlice.actions.setSelectedItemIndex(index));
     },
-    []
+    [dispatch]
   );
+
+  const handleOnClick = useCallback(() => {
+    dispatch(workingAreaSlice.actions.setSelectedItemIndex(undefined));
+  }, [dispatch]);
 
   return (
     <div className="working-area" ref={droppableRef} data-testid="workingarea">
@@ -94,6 +99,14 @@ export function WorkingArea(): JSX.Element {
         viewBox="0 0 100 100"
         version="1.1"
         xmlns="http://www.w3.org/2000/svg">
+        <rect
+          x={-100}
+          y={-500}
+          width={1000}
+          height={1000}
+          fill="transparent"
+          onClick={handleOnClick}
+        />
         {items.map((item, index) => (
           <Shape
             key={`${item.type}-${index}`}
