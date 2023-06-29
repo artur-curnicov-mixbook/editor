@@ -9,10 +9,9 @@ import { mapScreenToSvgCoordinates } from '../../application/utils';
 import { DraggableData } from '../Draggable/Draggable';
 import { Shape } from '../Shape/Shape';
 import { useWindowEventListener } from '../../hooks/useWindowEventListener';
-import { Item } from '../../domain/Item';
 
 export function WorkingArea(): JSX.Element {
-  const { items, draggingItemIndex } = useSelector((state: RootState) => state.workingAreaItems);
+  const { items } = useSelector((state: RootState) => state.workingAreaItems);
   const dispatch = useDispatch();
   const workingAreaRef = useRef<SVGSVGElement>(null);
   const { setNodeRef: droppableRef } = useDroppable({ id: 'droppable' });
@@ -50,56 +49,41 @@ export function WorkingArea(): JSX.Element {
     onDragEnd: handleDragEnd
   });
 
-  const [priorMouseCoordinates, setPriorMouseCoordinates] = useState({ x: 0, y: 0 });
-
-  const setPriorMouseSvgCoordinates = useCallback((x: number, y: number): void => {
-    const { current: workingAreaElement } = workingAreaRef;
-
-    if (!workingAreaElement) return;
-
-    setPriorMouseCoordinates(mapScreenToSvgCoordinates(x, y, workingAreaElement));
-  }, []);
-
-  const calculateUpdatedCoordinates = useCallback(
-    (draggingItem: Item, currentMouseCoordinates: DOMPoint): [x: number, y: number] => {
-      return [
-        draggingItem.x - (priorMouseCoordinates.x - currentMouseCoordinates.x),
-        draggingItem.y - (priorMouseCoordinates.y - currentMouseCoordinates.y)
-      ];
-    },
-    [priorMouseCoordinates]
-  );
+  const [movingItem, setMovingItem] = useState<MovingItem>();
 
   const handlePointerMove = useCallback(
     (event: PointerEvent): void => {
       const { current: workingAreaElement } = workingAreaRef;
 
       if (!workingAreaElement) return;
-      if (draggingItemIndex === undefined) return;
+      if (!movingItem) return;
 
-      const currentMouseCoordinates = mapScreenToSvgCoordinates(
-        event.movementX,
-        event.movementY,
+      const { clientX, clientY } = event;
+      const { index, innerOffsetX: innerOffsetX, innerOffsetY: innerOffsetY } = movingItem;
+
+      const { x, y } = mapScreenToSvgCoordinates(
+        clientX - innerOffsetX,
+        clientY - innerOffsetY,
         workingAreaElement
       );
 
-      const [x, y] = calculateUpdatedCoordinates(items[draggingItemIndex], currentMouseCoordinates);
-
-      dispatch(workingAreaSlice.actions.updateItemCoordinates({ index: draggingItemIndex, x, y }));
+      dispatch(workingAreaSlice.actions.updateItemCoordinates({ index, x, y }));
     },
-    [calculateUpdatedCoordinates, dispatch, draggingItemIndex, items]
+    [dispatch, movingItem]
   );
 
   const handlePointerUp = useCallback(() => {
-    dispatch(workingAreaSlice.actions.setDraggingItemIndex(undefined));
-  }, [dispatch]);
+    setMovingItem(undefined);
+  }, []);
 
   useWindowEventListener('pointermove', handlePointerMove);
   useWindowEventListener('pointerup', handlePointerUp);
 
-  const itemIsActive = useCallback(
-    (itemIndex: number) => itemIndex === draggingItemIndex,
-    [draggingItemIndex]
+  const handlePointerDown = useCallback(
+    (index: number, innerOffsetX: number, innerOffsetY: number) => {
+      setMovingItem({ index, innerOffsetX, innerOffsetY });
+    },
+    []
   );
 
   return (
@@ -111,16 +95,23 @@ export function WorkingArea(): JSX.Element {
         viewBox="0 0 100 100"
         version="1.1"
         xmlns="http://www.w3.org/2000/svg">
+        <rect x={0} y={0} width={100} height={100} fill="red" />
         {items.map((item, index) => (
           <Shape
             key={`${item.type}-${index}`}
             item={item}
             index={index}
-            isActive={itemIsActive(index)}
-            onPointerDown={setPriorMouseSvgCoordinates}
+            isActive={movingItem?.index === index}
+            onPointerDown={handlePointerDown}
           />
         ))}
       </svg>
     </div>
   );
+}
+
+interface MovingItem {
+  index: number;
+  innerOffsetX: number;
+  innerOffsetY: number;
 }

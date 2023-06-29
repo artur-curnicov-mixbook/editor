@@ -1,35 +1,38 @@
-import { useCallback, PointerEvent } from 'react';
+import { useCallback, useRef } from 'react';
 import { Item } from '../../domain/Item';
 import { Circle } from '../shapes/Circle';
 import { Square } from '../shapes/Square';
 import { Triangle } from '../shapes/Triangle';
-import { useDispatch } from 'react-redux';
-import { workingAreaSlice } from '../../state/workingAreaSlice';
 
 interface Props {
   item: Item;
   index: number;
   isActive: boolean;
-  onPointerDown(x: number, y: number): void;
+  onPointerDown(index: number, innerOffsetX: number, innerOffsetY: number): void;
 }
 
 export function Shape(props: Props): JSX.Element {
   const { item, index, isActive, onPointerDown } = props;
 
-  const dispatch = useDispatch();
+  const rootRef = useRef<SVGGElement>(null);
 
   const handlePointerDown = useCallback(
-    (event: PointerEvent) => {
-      onPointerDown(event.movementX, event.movementY);
-      dispatch(workingAreaSlice.actions.setDraggingItemIndex(index));
+    (event: React.PointerEvent) => {
+      const { current: rootElement } = rootRef;
+
+      if (!rootElement) return;
+
+      const { left, top } = rootElement.getBoundingClientRect();
+
+      onPointerDown(index, event.clientX - left, event.clientY - top);
     },
-    [dispatch, index, onPointerDown]
+    [index, onPointerDown]
   );
 
   const ConcreteShape = ITEM_TYPE_TO_SHAPE[item.type];
 
   return (
-    <g onPointerDown={handlePointerDown}>
+    <g ref={rootRef} onPointerDown={handlePointerDown}>
       <ConcreteShape item={item} isActive={isActive} />
     </g>
   );
