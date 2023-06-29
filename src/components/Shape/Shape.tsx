@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { Item } from '../../domain/Item';
 import { Circle } from '../shapes/Circle';
 import { Square } from '../shapes/Square';
@@ -7,14 +7,15 @@ import { Triangle } from '../shapes/Triangle';
 interface Props {
   item: Item;
   index: number;
-  isActive: boolean;
-  onPointerDown(index: number, innerOffsetX: number, innerOffsetY: number): void;
+  isMoving: boolean;
+  handleDragStart(index: number, innerOffsetX: number, innerOffsetY: number): void;
 }
 
 export function Shape(props: Props): JSX.Element {
-  const { item, index, isActive, onPointerDown } = props;
+  const { item, index, isMoving, handleDragStart } = props;
 
   const rootRef = useRef<SVGGElement>(null);
+  const moving = useMemo<string>(() => (isMoving ? 'moving' : ''), [isMoving]);
 
   const handlePointerDown = useCallback(
     (event: React.PointerEvent) => {
@@ -24,16 +25,16 @@ export function Shape(props: Props): JSX.Element {
 
       const { left, top } = rootElement.getBoundingClientRect();
 
-      onPointerDown(index, event.clientX - left, event.clientY - top);
+      handleDragStart(index, event.clientX - left, event.clientY - top);
     },
-    [index, onPointerDown]
+    [index, handleDragStart]
   );
 
   const ConcreteShape = ITEM_TYPE_TO_SHAPE[item.type];
 
   return (
-    <g ref={rootRef} onPointerDown={handlePointerDown}>
-      <ConcreteShape item={item} isActive={isActive} />
+    <g ref={rootRef} onPointerDown={handlePointerDown} className={moving}>
+      <ConcreteShape item={item} />
     </g>
   );
 }
