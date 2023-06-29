@@ -1,3 +1,19 @@
 .toolbox {
   background-color: #34495e;
 }
+
+.toolbox-option-group {
+  display: flex;
+  padding: 0 5px;
+  justify-content: space-between;
+}
+
+.toolbox-option-img {
+  width: 30px;
+  cursor: pointer;
+  fill: #dce8fa;
+}
+
+.toolbox-option-img:hover {
+  opacity: 0.8;
+}
