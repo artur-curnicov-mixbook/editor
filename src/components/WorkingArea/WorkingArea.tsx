@@ -10,6 +10,8 @@ import { DraggableData } from '../Draggable/Draggable';
 import { Shape } from '../Shape/Shape';
 import { useWindowEventListener } from '../../hooks/useWindowEventListener';
 
+const CANVAS_SIZE = 100;
+
 export function WorkingArea(): JSX.Element {
   const { items } = useSelector((state: RootState) => state.workingAreaItems);
   const dispatch = useDispatch();
@@ -96,14 +98,14 @@ export function WorkingArea(): JSX.Element {
         ref={workingAreaRef}
         width="100%"
         height="100%"
-        viewBox="0 0 100 100"
+        viewBox={[0, 0, CANVAS_SIZE, CANVAS_SIZE].join(' ')}
         version="1.1"
         xmlns="http://www.w3.org/2000/svg">
         <rect
-          x={-100}
-          y={-500}
-          width={1000}
-          height={1000}
+          x1={-CANVAS_SIZE * 100}
+          y1={-CANVAS_SIZE * 100}
+          x2={CANVAS_SIZE * 100}
+          y2={CANVAS_SIZE * 100}
           fill="transparent"
           onClick={handleOnClick}
         />

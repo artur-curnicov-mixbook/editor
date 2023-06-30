@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { Item } from '../../domain/Item';
 import { Circle } from '../shapes/Circle';
 import { Square } from '../shapes/Square';
@@ -19,12 +19,6 @@ export function Shape(props: Props): JSX.Element {
   const rootRef = useRef<SVGGElement>(null);
   const { selectedItemIndex } = useSelector((state: RootState) => state.workingAreaItems);
 
-  const moving = useMemo<string>(() => (isMoving ? 'moving' : ''), [isMoving]);
-  const selected = useMemo<string>(
-    () => (index === selectedItemIndex ? 'selected' : ''),
-    [index, selectedItemIndex]
-  );
-
   const handlePointerDown = useCallback(
     (event: React.PointerEvent) => {
       const { current: rootElement } = rootRef;
@@ -40,8 +34,12 @@ export function Shape(props: Props): JSX.Element {
 
   const ConcreteShape = ITEM_TYPE_TO_SHAPE[item.type];
 
+  const selectedClassName = index === selectedItemIndex ? 'selected' : '';
+  const movingClassName = isMoving ? 'moving' : '';
+  const className = [selectedClassName, movingClassName].join(' ');
+
   return (
-    <g ref={rootRef} onPointerDown={handlePointerDown} className={`${moving} ${selected}`}>
+    <g ref={rootRef} onPointerDown={handlePointerDown} className={className}>
       <ConcreteShape item={item} />
     </g>
   );

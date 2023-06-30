@@ -22,6 +22,21 @@ export const workingAreaSlice = createSlice({
     setSelectedItemIndex: (state: WorkingAreaState, action: PayloadAction<number | undefined>) => {
       state.selectedItemIndex = action.payload;
     },
+    changeSelectedItemZIndex: (
+      state: WorkingAreaState,
+      action: PayloadAction<'front' | 'back'>
+    ) => {
+      if (state.selectedItemIndex === undefined) return;
+      const [element] = state.items.splice(state.selectedItemIndex, 1);
+
+      if (action.payload === 'front') {
+        state.items.push(element);
+        state.selectedItemIndex = state.items.length - 1;
+      } else {
+        state.items.unshift(element);
+        state.selectedItemIndex = 0;
+      }
+    },
     moveSelectedItemToFront: (state: WorkingAreaState) => {
       if (state.selectedItemIndex === undefined) return;
 
