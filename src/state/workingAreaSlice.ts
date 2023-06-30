@@ -12,6 +12,7 @@ export const workingAreaSlice = createSlice({
   reducers: {
     addItem: (state: WorkingAreaState, action: PayloadAction<Item>) => {
       state.items = [...state.items, action.payload];
+      state.selectedItemIndex = state.items.length - 1;
     },
     updateItemCoordinates: (state: WorkingAreaState, action: PayloadAction<UpdateItemPayload>) => {
       const { index, x, y } = action.payload;
@@ -36,20 +37,6 @@ export const workingAreaSlice = createSlice({
         state.items.unshift(element);
         state.selectedItemIndex = 0;
       }
-    },
-    moveSelectedItemToFront: (state: WorkingAreaState) => {
-      if (state.selectedItemIndex === undefined) return;
-
-      const [element] = state.items.splice(state.selectedItemIndex, 1);
-      state.items.push(element);
-      state.selectedItemIndex = state.items.length - 1;
-    },
-    moveSelectedItemToBack: (state: WorkingAreaState) => {
-      if (state.selectedItemIndex === undefined) return;
-
-      const [element] = state.items.splice(state.selectedItemIndex, 1);
-      state.items.unshift(element);
-      state.selectedItemIndex = 0;
     }
   }
 });

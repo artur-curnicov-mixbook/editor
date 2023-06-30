@@ -11,6 +11,7 @@ import { Shape } from '../Shape/Shape';
 import { useWindowEventListener } from '../../hooks/useWindowEventListener';
 
 const CANVAS_SIZE = 100;
+const TRANSPARENT_POLYGON_SIZE = CANVAS_SIZE * 100;
 
 export function WorkingArea(): JSX.Element {
   const { items } = useSelector((state: RootState) => state.workingAreaItems);
@@ -101,11 +102,12 @@ export function WorkingArea(): JSX.Element {
         viewBox={[0, 0, CANVAS_SIZE, CANVAS_SIZE].join(' ')}
         version="1.1"
         xmlns="http://www.w3.org/2000/svg">
-        <rect
-          x1={-CANVAS_SIZE * 100}
-          y1={-CANVAS_SIZE * 100}
-          x2={CANVAS_SIZE * 100}
-          y2={CANVAS_SIZE * 100}
+        <polygon
+          points={`
+            ${-TRANSPARENT_POLYGON_SIZE},${-TRANSPARENT_POLYGON_SIZE} 
+            ${TRANSPARENT_POLYGON_SIZE},${-TRANSPARENT_POLYGON_SIZE} 
+            ${TRANSPARENT_POLYGON_SIZE},${TRANSPARENT_POLYGON_SIZE} 
+            ${-TRANSPARENT_POLYGON_SIZE},${TRANSPARENT_POLYGON_SIZE}`}
           fill="transparent"
           onClick={handleOnClick}
         />

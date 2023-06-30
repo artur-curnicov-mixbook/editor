@@ -5,6 +5,7 @@ import { Square } from '../shapes/Square';
 import { Triangle } from '../shapes/Triangle';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../state';
+import classNames from 'classnames';
 
 interface Props {
   item: Item;
@@ -32,11 +33,9 @@ export function Shape(props: Props): JSX.Element {
     [index, handleDragStart]
   );
 
+  const isSelected = index === selectedItemIndex;
   const ConcreteShape = ITEM_TYPE_TO_SHAPE[item.type];
-
-  const selectedClassName = index === selectedItemIndex ? 'selected' : '';
-  const movingClassName = isMoving ? 'moving' : '';
-  const className = [selectedClassName, movingClassName].join(' ');
+  const className = classNames({ moving: isMoving, selected: isSelected });
 
   return (
     <g ref={rootRef} onPointerDown={handlePointerDown} className={className}>

@@ -12,11 +12,11 @@ export function ToolBox(): JSX.Element {
   const { selectedItemIndex } = useSelector((state: RootState) => state.workingAreaItems);
 
   const handleOnClickToFront = useCallback(() => {
-    dispatch(workingAreaSlice.actions.moveSelectedItemToFront());
+    dispatch(workingAreaSlice.actions.changeSelectedItemZIndex('front'));
   }, [dispatch]);
 
   const handleOnClickToBack = useCallback(() => {
-    dispatch(workingAreaSlice.actions.moveSelectedItemToBack());
+    dispatch(workingAreaSlice.actions.changeSelectedItemZIndex('back'));
   }, [dispatch]);
 
   return (
