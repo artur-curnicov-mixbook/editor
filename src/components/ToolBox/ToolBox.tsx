@@ -21,6 +21,7 @@ export function ToolBox(): JSX.Element {
 
   return (
     <div className="toolbox" data-testid="toolbox">
+      Test
       {Object.values(ItemType).map((itemType) => (
         <ToolBoxShape key={itemType} itemType={itemType} />
       ))}
