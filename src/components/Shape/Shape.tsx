@@ -12,10 +12,11 @@ interface Props {
   index: number;
   isMoving: boolean;
   handleDragStart(index: number, innerOffsetX: number, innerOffsetY: number): void;
+  handleDragEnd(index: number): void;
 }
 
 export function Shape(props: Props): JSX.Element {
-  const { item, index, isMoving, handleDragStart } = props;
+  const { item, index, isMoving, handleDragStart, handleDragEnd } = props;
 
   const rootRef = useRef<SVGGElement>(null);
   const { selectedItemIndex } = useSelector((state: RootState) => state.workingAreaItems);
@@ -33,12 +34,18 @@ export function Shape(props: Props): JSX.Element {
     [index, handleDragStart]
   );
 
+  const handlePointerUp = useCallback(() => handleDragEnd(index), [index, handleDragEnd]);
+
   const isSelected = index === selectedItemIndex;
   const ConcreteShape = ITEM_TYPE_TO_SHAPE[item.type];
   const className = classNames({ moving: isMoving, selected: isSelected });
 
   return (
-    <g ref={rootRef} onPointerDown={handlePointerDown} className={className}>
+    <g
+      ref={rootRef}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      className={className}>
       <ConcreteShape item={item} />
     </g>
   );

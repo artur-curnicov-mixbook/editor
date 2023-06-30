@@ -27,7 +27,7 @@ export function WorkingArea(): JSX.Element {
     [dispatch]
   );
 
-  const handleDragEnd = useCallback(
+  const handleToolBoxDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { current: workingAreaElement } = workingAreaRef;
       const { current: dragData } = event.active.data as DataRef<DraggableData>;
@@ -50,7 +50,7 @@ export function WorkingArea(): JSX.Element {
   );
 
   useDndMonitor({
-    onDragEnd: handleDragEnd
+    onDragEnd: handleToolBoxDragEnd
   });
 
   const handlePointerMove = useCallback(
@@ -74,16 +74,18 @@ export function WorkingArea(): JSX.Element {
     [dispatch, movingItem]
   );
 
-  const handlePointerUp = useCallback(() => {
-    setMovingItem(undefined);
-  }, []);
-
   useWindowEventListener('pointermove', handlePointerMove);
-  useWindowEventListener('pointerup', handlePointerUp);
 
   const handleDragStart = useCallback(
     (index: number, innerOffsetX: number, innerOffsetY: number) => {
       setMovingItem({ index, innerOffsetX, innerOffsetY });
+    },
+    []
+  );
+
+  const handleWorkingAreaDragEnd = useCallback(
+    (index: number) => {
+      setMovingItem(undefined);
       dispatch(workingAreaSlice.actions.setSelectedItemIndex(index));
     },
     [dispatch]
@@ -118,6 +120,7 @@ export function WorkingArea(): JSX.Element {
             index={index}
             isMoving={movingItem?.index === index}
             handleDragStart={handleDragStart}
+            handleDragEnd={handleWorkingAreaDragEnd}
           />
         ))}
       </svg>
